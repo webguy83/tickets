@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { RequestValidationError } from '../errors/req-validation-error';
-import { DbValidationError } from '../errors/db-validation-error';
+import { CustomError } from '../errors/custom-error';
 
 interface IResponseStructure {
   message: string;
@@ -13,18 +12,9 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  if (err instanceof RequestValidationError) {
-    const errors: IResponseStructure[] = err.errors.map((err) => {
-      return {
-        message: err.msg,
-        field: err.param,
-      };
-    });
-    return res.status(400).send({ errors });
-  }
-
-  if (err instanceof DbValidationError) {
-    return res.status(500).send({ errors: [{ message: err.reason }] });
+  if (err instanceof CustomError) {
+    const errors: IResponseStructure[] = err.serializeErrors();
+    return res.status(err.statusCode).send({ errors });
   }
 
   res.status(400).send({
