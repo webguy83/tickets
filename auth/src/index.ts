@@ -1,5 +1,6 @@
 import express from 'express';
 import { json } from 'body-parser';
+import mongoose from 'mongoose';
 
 import { currentUserRouter } from './routes/current-user';
 import { signInRouter } from './routes/signin';
@@ -23,6 +24,21 @@ app.all('*', async () => {
 
 app.use(errorHandler);
 
-app.listen(3000, () => {
-  console.log('Listening on the port 300 yayyy~ FUCKERRRRRR');
-});
+const init = async () => {
+  try {
+    await mongoose.connect('mongodb://auth-mongo-srv:27017/auth', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+    });
+    console.log('hazaahh connected noob');
+  } catch (err) {
+    console.log(err);
+  }
+
+  app.listen(3000, () => {
+    console.log('Listening on the port 300 yayyy~ FUCKERRRRRR');
+  });
+};
+
+init();
