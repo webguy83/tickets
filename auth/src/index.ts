@@ -31,7 +31,7 @@ const init = async () => {
       useUnifiedTopology: true,
       useCreateIndex: true,
     });
-    console.log('hazaahh connected noob');
+    console.log('hazaahh connected noob ha');
   } catch (err) {
     console.log(err);
   }
