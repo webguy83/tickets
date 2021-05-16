@@ -1,11 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { CustomError } from '../errors/custom-error';
 
-interface IResponseStructure {
-  message: string;
-  field?: string;
-}
-
 export const errorHandler = (
   err: Error,
   req: Request,
@@ -13,11 +8,11 @@ export const errorHandler = (
   next: NextFunction
 ) => {
   if (err instanceof CustomError) {
-    const errors: IResponseStructure[] = err.serializeErrors();
-    return res.status(err.statusCode).send({ errors });
+    console.log(err);
+    return res.status(err.statusCode).send({ errors: err.serializeErrors() });
   }
 
   res.status(400).send({
-    message: err.message,
+    errors: [{ message: 'Something went wrong' }],
   });
 };

@@ -1,6 +1,8 @@
 import express from 'express';
+import 'express-async-errors';
 import { json } from 'body-parser';
 import mongoose from 'mongoose';
+import cookieSession from 'cookie-session';
 
 import { currentUserRouter } from './routes/current-user';
 import { signInRouter } from './routes/signin';
@@ -8,14 +10,10 @@ import { signOutRouter } from './routes/signout';
 import { signUpRouter } from './routes/signup';
 import { errorHandler } from './middlewares/error-handler';
 import { NotFoundError } from './errors/not-found-error';
-import 'express-async-errors';
-import cookieSession from 'cookie-session';
 
 const app = express();
 app.set('trust proxy', true);
-
 app.use(json());
-
 app.use(
   cookieSession({
     secure: true,
@@ -28,17 +26,18 @@ app.use(signInRouter);
 app.use(signOutRouter);
 app.use(signUpRouter);
 
-app.all('*', async () => {
+app.all('*', async (req, res) => {
   throw new NotFoundError();
 });
 
 app.use(errorHandler);
 
 const init = async () => {
+  if (!process.env.JWT_KEY) {
+    throw new Error('You need a JWT toke!');
+  }
+
   try {
-    if (!process.env.JWT_KEY) {
-      throw new Error('You need a JWT token!');
-    }
     await mongoose.connect('mongodb://auth-mongo-srv:27017/auth', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -46,7 +45,7 @@ const init = async () => {
     });
     console.log('hazaahh connected noob ha');
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 
   app.listen(3000, () => {

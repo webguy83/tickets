@@ -3,6 +3,7 @@ import { body } from 'express-validator';
 import { validateRequest } from '../middlewares/validate-request';
 import { User } from '../models/user';
 import jwt from 'jsonwebtoken';
+import { BadReqError } from '../errors/bad-req-error';
 
 const router = express.Router();
 
@@ -18,12 +19,10 @@ router.post(
   validateRequest,
   async (req: Request, res: Response) => {
     const { email, password } = req.body;
-
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      console.log('email used!!');
-      return res.send({});
+      throw new BadReqError('Email used!!!');
     }
 
     const user = User.build({ email, password });
