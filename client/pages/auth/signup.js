@@ -16,10 +16,10 @@ const SignUp = () => {
     success: () => Router.push('/'),
   });
 
-  const onSignUpSubmit = (e) => {
+  const onSignUpSubmit = async (e) => {
     e.preventDefault();
 
-    doReq();
+    await doReq();
   };
 
   const renderError = function (field) {

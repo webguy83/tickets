@@ -18,5 +18,5 @@ it('should not show the current user if not auth', async () => {
     .get('/api/users/currentuser')
     .send()
     .expect(200);
-  console.log(res.body.currentUser);
+  expect(res.body.currentUser).toEqual(null);
 });
