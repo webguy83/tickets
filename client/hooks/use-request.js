@@ -19,14 +19,15 @@ const UseRequest = ({ url, method, body, success }) => {
     try {
       setErrorsBlock(null);
       const res = await axios[method](url, body);
-
       if (success) {
         success(res.data);
       }
 
       return res.data;
     } catch (err) {
-      setErrorsBlock(renderErrors(err.response.data.errors));
+      if (err.response) {
+        setErrorsBlock(renderErrors(err.response.data.errors));
+      }
     }
   };
 
