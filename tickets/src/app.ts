@@ -2,8 +2,9 @@ import express from 'express';
 import 'express-async-errors';
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
+import { createTickerRouter } from './routes/new';
 
-import { errorHandler, NotFoundError } from '@goofytickets/common';
+import { errorHandler, NotFoundError, currentUser } from '@goofytickets/common';
 
 const app = express();
 app.set('trust proxy', true);
@@ -14,6 +15,10 @@ app.use(
     secure: process.env.NODE_ENV !== 'test',
   })
 );
+
+app.use(currentUser);
+
+app.use(createTickerRouter);
 
 app.all('*', async (req, res) => {
   throw new NotFoundError();
