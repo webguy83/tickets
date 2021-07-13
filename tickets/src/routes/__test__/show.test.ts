@@ -1,9 +1,9 @@
 import request from 'supertest';
 import { app } from '../../app';
-import { getAuthCookie } from '../../test/utils';
+import { getAuthCookie, getObjectId } from '../../test/utils';
 
 it('returns a 404 if ticket cannot be found', async () => {
-  await request(app).get('/api/tickets/rollingducklegfeature');
+  await request(app).get(`/api/tickets/${getObjectId}`).send().expect(404);
 });
 
 it('returns a ticket if the ticket can be found', async () => {

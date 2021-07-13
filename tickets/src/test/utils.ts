@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 const getAuthCookie = () => {
   // build JWT payload { id, email}
@@ -20,4 +21,6 @@ const getAuthCookie = () => {
   return [`express:sess=${base64Session}`];
 };
 
-export { getAuthCookie };
+const getObjectId = new mongoose.Types.ObjectId().toHexString();
+
+export { getAuthCookie, getObjectId };

@@ -5,6 +5,9 @@ import cookieSession from 'cookie-session';
 import { createTickerRouter } from './routes/new';
 
 import { errorHandler, NotFoundError, currentUser } from '@goofytickets/common';
+import { showTicketRouter } from './routes/show';
+import { indexTickerRouter } from './routes';
+import { updateTicketRouter } from './routes/update';
 
 const app = express();
 app.set('trust proxy', true);
@@ -19,6 +22,9 @@ app.use(
 app.use(currentUser);
 
 app.use(createTickerRouter);
+app.use(showTicketRouter);
+app.use(indexTickerRouter);
+app.use(updateTicketRouter);
 
 app.all('*', async (req, res) => {
   throw new NotFoundError();
