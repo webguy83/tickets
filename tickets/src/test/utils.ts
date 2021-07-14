@@ -1,10 +1,12 @@
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
+const getObjectId = new mongoose.Types.ObjectId().toHexString();
+
 const getAuthCookie = () => {
   // build JWT payload { id, email}
   const payload = {
-    id: 'dsfglsdfsdf',
+    id: mongoose.Types.ObjectId().toHexString(),
     email: 'nub@hothorse.com',
   };
   // create the JWT
@@ -20,7 +22,5 @@ const getAuthCookie = () => {
   // return a string thats cookie with the encoded data
   return [`express:sess=${base64Session}`];
 };
-
-const getObjectId = new mongoose.Types.ObjectId().toHexString();
 
 export { getAuthCookie, getObjectId };
