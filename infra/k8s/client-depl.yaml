@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: us.gcr.io/ticket-dev-311204/client
+          image: us.gcr.io/ticket-funny-lol/client
 ---
 apiVersion: v1
 kind: Service
