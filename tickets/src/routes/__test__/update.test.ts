@@ -1,5 +1,6 @@
 import request from 'supertest';
 import { app } from '../../app';
+import { natsWrapper } from '../../nats-wrapper';
 import { getObjectId, getAuthCookie } from '../../test/utils';
 
 it('returns a 404 if the id does not exist', async () => {
@@ -101,4 +102,27 @@ it('returns a 200 if the user provides valid data', async () => {
 
   expect(updatedRes.body.title).toEqual('get rekt lol');
   expect(updatedRes.body.price).toEqual(69);
+});
+
+it('updates an event', async () => {
+  const cookie = getAuthCookie();
+
+  const res = await request(app)
+    .post('/api/tickets')
+    .set('Cookie', cookie)
+    .send({
+      title: 'knockers',
+      price: 453,
+    });
+
+  await request(app)
+    .put(`/api/tickets/${res.body.id}`)
+    .set('Cookie', cookie)
+    .send({
+      title: 'get rekt lol',
+      price: 69,
+    })
+    .expect(200);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });
