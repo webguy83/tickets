@@ -2,12 +2,12 @@ import express from 'express';
 import 'express-async-errors';
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
-import { createTickerRouter } from './routes/new';
+import { createOrderRouter } from './routes/new';
 
 import { errorHandler, NotFoundError, currentUser } from '@goofytickets/common';
-import { showTicketRouter } from './routes/show';
-import { indexTickerRouter } from './routes';
-import { updateTicketRouter } from './routes/update';
+import { showOrderRouter } from './routes/show';
+import { indexOrdersRouter } from './routes';
+import { deleteOrderRouter } from './routes/delete';
 
 const app = express();
 app.set('trust proxy', true);
@@ -21,10 +21,10 @@ app.use(
 
 app.use(currentUser);
 
-app.use(createTickerRouter);
-app.use(showTicketRouter);
-app.use(indexTickerRouter);
-app.use(updateTicketRouter);
+app.use(createOrderRouter);
+app.use(showOrderRouter);
+app.use(indexOrdersRouter);
+app.use(deleteOrderRouter);
 
 app.all('*', async (req, res) => {
   throw new NotFoundError();
