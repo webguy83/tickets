@@ -26,6 +26,8 @@ spec:
               value: 'tickets'
             - name: MONGO_URI
               value: 'mongodb://orders-mongo-srv:27017/orders'
+            - name: EXPIRATION_ORDER_SECONDS
+              value: '900'
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:

@@ -1,14 +1,17 @@
-import { currentUser, requireAuth } from '@goofytickets/common';
+import { requireAuth } from '@goofytickets/common';
 import express, { Request, Response } from 'express';
+import { Order } from '../models/order';
 
 const indexOrdersRouter = express.Router();
 
 indexOrdersRouter.get(
   '/api/orders',
-  currentUser,
   requireAuth,
-  (req: Request, res: Response) => {
-    res.send({});
+  async (req: Request, res: Response) => {
+    const orders = await Order.find({
+      userId: req.currentUser!.id,
+    }).populate('ticket');
+    res.send(orders);
   }
 );
 

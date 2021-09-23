@@ -14,7 +14,7 @@ import { Order } from '../models/order';
 const createOrderRouter = express.Router();
 
 createOrderRouter.post(
-  '/api/orders/',
+  '/api/orders',
   requireAuth,
   [
     body('ticketId')
@@ -26,23 +26,35 @@ createOrderRouter.post(
   validateRequest,
   async (req: Request, res: Response) => {
     const { ticketId } = req.body;
+    let seconds = '';
 
     const ticket = await Ticket.findById(ticketId);
     if (!ticket) {
       throw new NotFoundError();
     }
 
-    const existingOrder = await Order.findOne({
-      ticket,
-      status: {
-        $nin: [OrderStatus.Cancelled],
-      },
-    });
-
-    if (existingOrder) {
+    const isReserved = await ticket.isReserved();
+    if (isReserved) {
       throw new BadReqError('Ticket is reserved already!');
     }
-    res.send({});
+
+    if (process.env.EXPIRATION_ORDER_SECONDS) {
+      seconds = process.env.EXPIRATION_ORDER_SECONDS;
+    }
+
+    const expiresAt = new Date();
+    expiresAt.setSeconds(expiresAt.getSeconds() + parseInt(seconds));
+
+    const order = Order.build({
+      userId: req.currentUser!.id,
+      status: OrderStatus.Created,
+      expiresAt,
+      ticket,
+    });
+
+    await order.save();
+
+    res.status(201).send(order);
   }
 );
 

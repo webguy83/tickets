@@ -1,6 +1,8 @@
+import { Schema, Model, Document, model } from 'mongoose';
 import { OrderStatus } from '@goofytickets/common';
-import mongoose from 'mongoose';
 import { TicketDoc } from './ticket';
+
+export { OrderStatus };
 
 interface OrderAttrs {
   userId: string;
@@ -9,18 +11,18 @@ interface OrderAttrs {
   ticket: TicketDoc;
 }
 
-interface OrderDoc extends mongoose.Document {
+interface OrderDoc extends Document {
   userId: string;
   status: OrderStatus;
   expiresAt: Date;
   ticket: TicketDoc;
 }
 
-interface OrderModel extends mongoose.Model<OrderDoc> {
+interface OrderModel extends Model<OrderDoc> {
   build(ticketAttrs: OrderAttrs): OrderDoc;
 }
 
-const OrderSchema = new mongoose.Schema(
+const OrderSchema = new Schema(
   {
     userId: {
       type: String,
@@ -33,10 +35,10 @@ const OrderSchema = new mongoose.Schema(
       default: OrderStatus.Created,
     },
     expiresAt: {
-      type: mongoose.Schema.Types.Date,
+      type: Schema.Types.Date,
     },
     ticket: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'Ticket',
     },
   },
@@ -54,6 +56,6 @@ OrderSchema.statics.build = function (attrs: OrderAttrs) {
   return new Order(attrs);
 };
 
-const Order = mongoose.model<OrderDoc, OrderModel>('ticket', OrderSchema);
+const Order = model<OrderDoc, OrderModel>('Order', OrderSchema);
 
 export { Order };
