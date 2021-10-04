@@ -3,6 +3,7 @@ import { getAuthCookie, getObjectId } from '../../test/utils';
 import { app } from '../../app';
 import { Ticket } from '../../models/ticket';
 import { Order, OrderStatus } from '../../models/order';
+import { natsWrapper } from '../../nats-wrapper';
 
 it('has a route handler listening to orders', async () => {
   const res = await request(app).post('/api/orders').send({});
@@ -94,4 +95,21 @@ it('reserves a ticket', async () => {
   expect(JSON.stringify(orders[0].ticket)).toEqual(JSON.stringify(ticket.id));
 });
 
-it.todo('emits an order created event');
+it('emits an order created event', async () => {
+  const ticketTitle = 'Oger';
+  const ticketPrice = 69;
+
+  const ticket = Ticket.build({
+    title: ticketTitle,
+    price: ticketPrice,
+  });
+  await ticket.save();
+
+  await request(app)
+    .post('/api/orders')
+    .set('Cookie', getAuthCookie())
+    .send({ ticketId: ticket.id })
+    .expect(201);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
+});
