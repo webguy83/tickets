@@ -8,6 +8,11 @@ interface TicketAttrs {
   price: number;
 }
 
+interface FindByIdwithVersionAttrs {
+  id: string;
+  version: number;
+}
+
 export interface TicketDoc extends mongoose.Document {
   title: string;
   price: number;
@@ -17,6 +22,7 @@ export interface TicketDoc extends mongoose.Document {
 
 interface TicketModel extends mongoose.Model<TicketDoc> {
   build(ticketAttrs: TicketAttrs): TicketDoc;
+  findByIdwithVersion(evt: FindByIdwithVersionAttrs): Promise<TicketDoc | null>;
 }
 
 const ticketSchema = new mongoose.Schema(
@@ -43,6 +49,15 @@ const ticketSchema = new mongoose.Schema(
 
 ticketSchema.set('versionKey', 'version');
 ticketSchema.plugin(updateIfCurrentPlugin);
+
+ticketSchema.statics.findByIdwithVersion = function (
+  evt: FindByIdwithVersionAttrs
+) {
+  return Ticket.findOne({
+    _id: evt.id,
+    version: evt.version - 1,
+  });
+};
 
 ticketSchema.statics.build = function (attrs: TicketAttrs) {
   return new Ticket({

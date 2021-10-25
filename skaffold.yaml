@@ -8,9 +8,9 @@ build:
   # local:
   #   push: false
   googleCloudBuild:
-    projectId: ticket-funny-lol
+    projectId: the-amazing-ticket
   artifacts:
-    - image: us.gcr.io/ticket-funny-lol/auth
+    - image: us.gcr.io/the-amazing-ticket/auth
       context: auth
       docker:
         dockerfile: Dockerfile
@@ -18,7 +18,7 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
-    - image: us.gcr.io/ticket-funny-lol/client
+    - image: us.gcr.io/the-amazing-ticket/client
       context: client
       docker:
         dockerfile: Dockerfile
@@ -26,7 +26,7 @@ build:
         manual:
           - src: '**/*.js'
             dest: .
-    - image: us.gcr.io/ticket-funny-lol/tickets
+    - image: us.gcr.io/the-amazing-ticket/tickets
       context: tickets
       docker:
         dockerfile: Dockerfile
@@ -34,7 +34,7 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
-    - image: us.gcr.io/ticket-funny-lol/orders
+    - image: us.gcr.io/the-amazing-ticket/orders
       context: orders
       docker:
         dockerfile: Dockerfile
