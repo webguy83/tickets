@@ -2,6 +2,7 @@ import request from 'supertest';
 import { getAuthCookie } from '../../test/utils';
 import { app } from '../../app';
 import { Ticket } from '../../models/ticket';
+import { Types } from 'mongoose';
 
 it('has a route handler listening for orders', async () => {
   const res = await request(app).get('/api/orders').send({});
@@ -15,6 +16,7 @@ it('will throw a 401 if not authenticated', async () => {
 
 const makeTicket = async () => {
   const ticket = Ticket.build({
+    id: Types.ObjectId().toHexString(),
     title: 'roodypoo',
     price: 69,
   });

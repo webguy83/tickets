@@ -45,6 +45,7 @@ it('should throw a 404 if ticket does not exist', async () => {
 
 it('should throw a 400 if the ticket is reserved', async () => {
   const ticket = Ticket.build({
+    id: getObjectId,
     title: 'Oger',
     price: 69,
   });
@@ -73,6 +74,7 @@ it('reserves a ticket', async () => {
   const ticketPrice = 69;
 
   const ticket = Ticket.build({
+    id: getObjectId,
     title: ticketTitle,
     price: ticketPrice,
   });
@@ -100,6 +102,7 @@ it('emits an order created event', async () => {
   const ticketPrice = 69;
 
   const ticket = Ticket.build({
+    id: getObjectId,
     title: ticketTitle,
     price: ticketPrice,
   });

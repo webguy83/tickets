@@ -12,6 +12,7 @@ it('should throw a 401 if the user is not auth', async () => {
 
 it('should update an order successfully', async () => {
   const ticket = Ticket.build({
+    id: getObjectId,
     title: 'noooob',
     price: 69,
   });
@@ -48,6 +49,7 @@ it('should throw a 404 if order not found', async () => {
 
 it('should throw a 401 if user not authorized', async () => {
   const ticket = Ticket.build({
+    id: getObjectId,
     title: 'noooob',
     price: 69,
   });
@@ -70,6 +72,7 @@ it('should throw a 401 if user not authorized', async () => {
 
 it('should update an order to cancelled', async () => {
   const ticket = Ticket.build({
+    id: getObjectId,
     title: 'noooob',
     price: 69,
   });
@@ -92,6 +95,7 @@ it('should update an order to cancelled', async () => {
 
 it('emits an ordered cancelled event', async () => {
   const ticket = Ticket.build({
+    id: getObjectId,
     title: 'noooob',
     price: 69,
   });

@@ -1,6 +1,7 @@
 import { Schema, Model, Document, model } from 'mongoose';
 import { OrderStatus } from '@goofytickets/common';
 import { TicketDoc } from './ticket';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 
 export { OrderStatus };
 
@@ -12,6 +13,7 @@ interface OrderAttrs {
 }
 
 interface OrderDoc extends Document {
+  version: number;
   userId: string;
   status: OrderStatus;
   expiresAt: Date;
@@ -51,6 +53,9 @@ const OrderSchema = new Schema(
     },
   }
 );
+
+OrderSchema.set('versionKey', 'version');
+OrderSchema.plugin(updateIfCurrentPlugin);
 
 OrderSchema.statics.build = function (attrs: OrderAttrs) {
   return new Order(attrs);
