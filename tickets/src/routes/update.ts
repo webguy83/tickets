@@ -6,6 +6,7 @@ import {
   NotFoundError,
   requireAuth,
   NotAuthError,
+  BadReqError,
 } from '@goofytickets/common';
 import { Ticket } from '../models/ticket';
 import { TicketUpdatedPublisher } from '../events/publishers/ticket-updated-publisher';
@@ -32,6 +33,10 @@ updateTicketRouter.put(
 
     if (ticket.userId !== req.currentUser!.id) {
       throw new NotAuthError();
+    }
+
+    if (ticket.orderId) {
+      throw new BadReqError('Cannot edit a reserved ticket!!');
     }
 
     ticket.set({

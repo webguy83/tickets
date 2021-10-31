@@ -1,5 +1,6 @@
 import request from 'supertest';
 import { app } from '../../app';
+import { Ticket } from '../../models/ticket';
 import { natsWrapper } from '../../nats-wrapper';
 import { getObjectId, getAuthCookie } from '../../test/utils';
 
@@ -125,4 +126,31 @@ it('updates an event', async () => {
     .expect(200);
 
   expect(natsWrapper.client.publish).toHaveBeenCalled();
+});
+
+it('rejects updates if the ticket is reserved', async () => {
+  const cookie = getAuthCookie();
+
+  const res = await request(app)
+    .post('/api/tickets')
+    .set('Cookie', cookie)
+    .send({
+      title: 'knockers',
+      price: 453,
+    });
+
+  const ticket = await Ticket.findById(res.body.id);
+  ticket?.set({
+    orderId: getObjectId,
+  });
+  await ticket?.save();
+
+  await request(app)
+    .put(`/api/tickets/${res.body.id}`)
+    .set('Cookie', cookie)
+    .send({
+      title: 'get rekt lol',
+      price: 69,
+    })
+    .expect(400);
 });
