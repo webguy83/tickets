@@ -5,7 +5,7 @@ import { QueueGroupName } from './queue-group-name';
 
 export class TicketCreatedListener extends Listener<TicketCreatedEvent> {
   subject: Subjects.TicketCreated = Subjects.TicketCreated;
-  questGroupName = QueueGroupName.OrdersService;
+  queueGroupName = QueueGroupName.OrdersService;
 
   async onMessage(data: TicketCreatedEvent['data'], msg: Message) {
     const { title, price, id } = data;

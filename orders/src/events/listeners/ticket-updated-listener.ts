@@ -5,7 +5,7 @@ import { QueueGroupName } from './queue-group-name';
 
 export class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
   subject: Subjects.TicketUpdated = Subjects.TicketUpdated;
-  questGroupName = QueueGroupName.OrdersService;
+  queueGroupName = QueueGroupName.OrdersService;
 
   async onMessage(data: TicketUpdatedEvent['data'], msg: Message) {
     const ticket = await Ticket.findByIdwithVersion(data);

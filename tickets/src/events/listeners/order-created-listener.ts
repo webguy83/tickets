@@ -6,7 +6,7 @@ import { QueueGroupName } from './queue-group-name';
 
 export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
   subject: Subjects.OrderCreated = Subjects.OrderCreated;
-  questGroupName = QueueGroupName.TicketsService;
+  queueGroupName = QueueGroupName.TicketsService;
 
   async onMessage(data: OrderCreatedEvent['data'], msg: Message) {
     const ticket = await Ticket.findById(data.ticket.id);
