@@ -10,6 +10,11 @@ interface OrderAttrs {
   status: OrderStatus;
 }
 
+interface FindByIdwithVersionAttrs {
+  id: string;
+  version: number;
+}
+
 interface OrderDoc extends Document {
   version: number;
   userId: string;
@@ -19,6 +24,7 @@ interface OrderDoc extends Document {
 
 interface OrderModel extends Model<OrderDoc> {
   build(attrs: OrderAttrs): OrderDoc;
+  findByIdwithVersion(evt: FindByIdwithVersionAttrs): Promise<OrderDoc | null>;
 }
 
 const orderSchema = new Schema(
@@ -49,6 +55,13 @@ const orderSchema = new Schema(
 
 orderSchema.set('versionKey', 'version');
 orderSchema.plugin(updateIfCurrentPlugin);
+
+orderSchema.statics.findByIdwithVersion = function (evt: FindByIdwithVersionAttrs) {
+  return Order.findOne({
+    _id: evt.id,
+    version: evt.version - 1,
+  });
+};
 
 orderSchema.statics.build = (attrs: OrderAttrs) => {
   return new Order({

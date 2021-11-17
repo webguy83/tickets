@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
 import { app } from './app';
+import { OrderCancelledListener } from './events/listeners/order-cancelled-listener';
+import { OrderCreatedListener } from './events/listeners/order-created-listener';
 import { natsWrapper } from './nats-wrapper';
 
 const init = async () => {
-  const { JWT_KEY, MONGO_URI, NATS_URL, NATS_CLUSTER_ID, NATS_CLIENT_ID } =
-    process.env;
+  const { JWT_KEY, MONGO_URI, NATS_URL, NATS_CLUSTER_ID, NATS_CLIENT_ID } = process.env;
   if (!JWT_KEY) {
     throw new Error('You need a JWT token!');
   }
@@ -33,6 +34,9 @@ const init = async () => {
     });
     process.on('SIGINT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
+
+    new OrderCreatedListener(natsWrapper.client).listen();
+    new OrderCancelledListener(natsWrapper.client).listen();
 
     await mongoose.connect(MONGO_URI, {
       useNewUrlParser: true,
